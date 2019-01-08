@@ -1,0 +1,52 @@
+# References:
+#  https://docs.docker.com/compose/compose-file/#placement
+
+# alias dcf='docker-compose -f docker/docker-compose-dev.yml'
+# dcf build
+# dcf up -d
+# dcf ps
+# dcf stop
+# dcf rm
+
+version: "3.6"
+
+services:
+
+  flack:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+
+    command: python -m http.server 8000
+
+    # python manage.py createdb
+    # python manage.py runserver
+
+    environment:
+      PYTHONUNBUFFERED: 'true'
+
+    volumes:
+      - '..:/usr/flack'
+
+    ports:
+      - '8999:8000'
+      - '5999:5000'
+
+  redis:
+    image: 'redis:latest'
+    command: redis-server --requirepass devpassword
+    volumes:
+      - 'redis:/data'
+    ports:
+      - '6379:6379'
+
+  celery:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: celery worker -l info -A flack.celery
+    volumes:
+      - '..:/usr/flack'
+
+volumes:
+  redis:
