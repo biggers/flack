@@ -1,4 +1,4 @@
-# References:
+# References:  -*-conf-*-
 #  https://docs.docker.com/compose/compose-file/#placement
 
 # alias dcf='docker-compose -f docker/docker-compose-dev.yml'
@@ -12,41 +12,56 @@ version: "3.6"
 
 services:
 
-  flack:
+  web:
     build:
       context: ..
       dockerfile: docker/Dockerfile
 
-    command: python -m http.server 8000
-
-    # python manage.py createdb
-    # python manage.py runserver
-
     environment:
       PYTHONUNBUFFERED: 'true'
+      CELERY_BROKER_URL: 'redis://redis:6379/0'
+      CELERY_RESULT_BACKEND: 'redis://redis:6379/0'
+      FLACK_CONFIG: 'development'
+      C_FORCE_ROOT: 'true'
+      HOST: '0.0.0.0'
+      PORT: 5001
+      DEBUG: 1
+
+    # command: python -m http.server 8000
+    command: >
+      sh -c "python manage.py celery &&
+             python manage.py runserver --reload"
+
+    # python manage.py createdb
+    # python manage.py runserver --reload
+
 
     volumes:
       - '..:/usr/flack'
 
     ports:
       - '8999:8000'
-      - '5999:5000'
-
-  redis:
-    image: 'redis:latest'
-    command: redis-server --requirepass devpassword
-    volumes:
-      - 'redis:/data'
-    ports:
-      - '6379:6379'
+      - '5999:5001'
+    depends_on:
+      - redis
+      - celery
 
   celery:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    command: celery worker -l info -A flack.celery
+    # command: celery worker -A flack.celery -l info
     volumes:
       - '..:/usr/flack'
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
+    volumes:
+      - 'redis:/data'
+    ports:
+      - 6379:6379
 
 volumes:
   redis:

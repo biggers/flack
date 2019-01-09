@@ -4,8 +4,14 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):
-    DEBUG = False
-    TESTING = False
+    """ Flask config-object
+    """
+    DEBUG = os.environ.get('DEBUG', False)
+    TESTING = os.environ.get('TESTING', False)
+
+    HOST = os.environ.get('HOST', '127.0.0.1')
+    PORT = os.environ.get('PORT', 5000)
+
     SECRET_KEY = os.environ.get('SECRET_KEY',
                                 '51f52814-0071-11e6-a247-000ec6c2372c')
     SQLALCHEMY_DATABASE_URI = os.environ.get(
@@ -19,14 +25,20 @@ class Config(object):
 
 
 class DevelopmentConfig(Config):
+    """ flack devel-config
+    """
     DEBUG = True
 
 
 class ProductionConfig(Config):
+    """ flack Production-config
+    """
     pass
 
 
 class TestingConfig(Config):
+    """ flack Testing-config
+    """
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
     CELERY_CONFIG = {'CELERY_ALWAYS_EAGER': True}

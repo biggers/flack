@@ -13,12 +13,11 @@ WORKDIR $INSTALL_PATH
 RUN  groupadd -r $USER && \
     useradd -r -g $USER $USER && \
     apt-get -y update && \
-    apt-get -y install less vim-tiny build-essential && \
+    apt-get -y install less vim-tiny netcat build-essential && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt && \
-    pip freeze > reqs.txt
+RUN pip install -r requirements.txt
 
 COPY . .
 
