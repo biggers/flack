@@ -44,3 +44,8 @@ venv
 
 # Redis
 dump.rdb
+
+# LOCAL in this repo
+*.log*
+*~
+*.old

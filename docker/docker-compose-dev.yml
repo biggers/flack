@@ -19,22 +19,16 @@ services:
 
     environment:
       PYTHONUNBUFFERED: 'true'
-      CELERY_BROKER_URL: 'redis://redis:6379/0'
-      CELERY_RESULT_BACKEND: 'redis://redis:6379/0'
       FLACK_CONFIG: 'development'
+      CELERY_BROKER_URL: 'redis://redis:6379/0'
       C_FORCE_ROOT: 'true'
-      HOST: '0.0.0.0'
-      PORT: 5001
+      # HOST: '0.0.0.0'
+      # PORT: 5001
       DEBUG: 1
 
     # command: python -m http.server 8000
     command: >
-      sh -c "python manage.py celery &&
-             python manage.py runserver --reload"
-
-    # python manage.py createdb
-    # python manage.py runserver --reload
-
+      sh -c "python manage.py runserver -h '0.0.0.0' -p 5001 --reload"
 
     volumes:
       - '..:/usr/flack'
@@ -50,7 +44,11 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    # command: celery worker -A flack.celery -l info
+    environment:
+      CELERY_BROKER_URL: 'redis://redis:6379/0'
+      CELERY_RESULT_BACKEND: 'redis://redis:6379/0'
+      C_FORCE_ROOT: 'true'
+    command: celery worker -A flack.celery -l info
     volumes:
       - '..:/usr/flack'
     depends_on:
