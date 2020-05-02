@@ -1,0 +1,28 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+coverage = "*"
+
+[packages]
+anyjson = "*"
+beautifulsoup4 = "*"
+bleach = "*"
+celery = "*"
+eventlet = "*"
+gunicorn = "*"
+Flask = "*"
+Flask-Bootstrap = "*"
+Flask-HTTPAuth = "*"
+Flask-Script = "*"
+Flask-SocketIO = "*"
+Flask-SQLAlchemy = "*"
+markdown = "*"
+redis = "*"
+requests = "*"
+
+[requires]
+python_version = "3.7"

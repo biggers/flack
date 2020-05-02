@@ -6,9 +6,13 @@ import sys
 import eventlet
 eventlet.monkey_patch()
 
-from flask_script import Manager, Command, Server as _Server, Option
+from flask_script import (  # noqa:E402
+    Manager, Command, Server as _Server, Option
+)
 
-from flack import create_app, db, socketio
+from flack import (  # noqa:E402
+    create_app, db, socketio
+)
 
 manager = Manager(create_app)
 
@@ -68,6 +72,7 @@ class Server(_Server):
                      use_reloader=use_reloader,
                      **self.server_options)
 
+
 manager.add_command("runserver", Server())
 
 
@@ -80,6 +85,7 @@ class CeleryWorker(Command):
         ret = subprocess.call(
             ['celery', 'worker', '-A', 'flack.celery'] + argv)
         sys.exit(ret)
+
 
 manager.add_command("celery", CeleryWorker())
 

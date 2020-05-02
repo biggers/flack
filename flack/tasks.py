@@ -37,7 +37,7 @@ def run_flask_request(environ):
         # Run the route function and record the response
         try:
             rv = app.full_dispatch_request()
-        except:
+        except Exception:
             # If we are in debug mode we want to see the exception
             # Else, return a 500 error
             if app.debug:
@@ -46,7 +46,7 @@ def run_flask_request(environ):
         return (rv.get_data(), rv.status_code, rv.headers)
 
 
-def async(f):
+def async_task(f):
     """
     This decorator transforms a sync route to asynchronous by running it
     in a background thread.
